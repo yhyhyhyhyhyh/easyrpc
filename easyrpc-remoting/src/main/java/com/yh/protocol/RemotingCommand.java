@@ -1,6 +1,8 @@
 package com.yh.protocol;
 
-public class RemotingCommand {
+import java.io.Serializable;
+
+public class RemotingCommand implements Serializable {
 
     //实例名称
     private String instanceId;
@@ -9,7 +11,7 @@ public class RemotingCommand {
     //方法调用类型
     private Call callType;
     //方法入参
-    private Parameter[] parameters;
+    private ParameterHolder parameters;
     //是否是广播
     private Boolean isBroadcast;
     //重试次数
@@ -41,14 +43,6 @@ public class RemotingCommand {
         this.callType = callType;
     }
 
-    public Parameter[] getParameters() {
-        return parameters;
-    }
-
-    public void setParameters(Parameter[] parameters) {
-        this.parameters = parameters;
-    }
-
     public Boolean getBroadcast() {
         return isBroadcast;
     }
@@ -71,5 +65,13 @@ public class RemotingCommand {
 
     public void setIocBean(Boolean iocBean) {
         isIocBean = iocBean;
+    }
+
+    public ParameterHolder getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(ParameterHolder parameters) {
+        this.parameters = parameters;
     }
 }

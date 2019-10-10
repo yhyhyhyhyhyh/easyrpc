@@ -1,25 +1,17 @@
 package com.yh.protocol;
 
-public class RpcResult {
+import java.io.Serializable;
 
-    //返回结果的json形式
-    private String result;
-    //返回结果的目标类
-    private String responseClass;
+public class RpcResult implements Serializable {
 
-    public String getResult() {
+    //返回结果
+    private Object result;
+
+    public Object getResult() {
         return result;
     }
 
-    public void setResult(String result) {
+    public void setResult(Object result) {
         this.result = result;
-    }
-
-    public String getResponseClass() {
-        return responseClass;
-    }
-
-    public void setResponseClass(String responseClass) {
-        this.responseClass = responseClass;
     }
 }

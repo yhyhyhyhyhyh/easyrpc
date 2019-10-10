@@ -1,6 +1,8 @@
 package com.yh.protocol;
 
-public enum Call {
+import java.io.Serializable;
+
+public enum Call implements Serializable {
 
     //调用方法类型
     VIRTUAL(0),
