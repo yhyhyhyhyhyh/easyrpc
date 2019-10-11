@@ -14,7 +14,6 @@ import java.util.concurrent.TimeUnit;
 
 public class NettyServer {
 
-    private String hostname;
 
     private Integer port;
 
@@ -23,7 +22,6 @@ public class NettyServer {
     private EventLoopGroup childGroup = null;
 
     public NettyServer(String hostname,Integer port) {
-        this.hostname = hostname;
         this.port = port;
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
@@ -53,12 +51,13 @@ public class NettyServer {
                         protected void initChannel(SocketChannel nioSocketChannel) throws Exception {
                             nioSocketChannel.pipeline().addLast(MarshallingCodeCFactory.buildMarshallingEncoder())
                                     .addLast(MarshallingCodeCFactory.buildMarshallingDecoder())
-                                    .addLast(new ReadTimeoutHandler(60, TimeUnit.SECONDS))
+                                    //长连接保持10min
+                                    .addLast(new ReadTimeoutHandler(MixAll.KEEP_ALIVE, TimeUnit.SECONDS))
                                     //.addLast(new ServerMessageHandler())
                             ;
                         }
                     });
-            //ChannelFuture cf = bootstrap.bind(port).sync();
+            bootstrap.bind(port).sync();
         } catch (Exception e) {
             e.printStackTrace();
         }

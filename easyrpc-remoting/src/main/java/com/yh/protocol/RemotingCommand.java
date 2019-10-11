@@ -12,8 +12,6 @@ public class RemotingCommand implements Serializable {
     private Call callType;
     //方法入参
     private ParameterHolder parameters;
-    //是否是广播
-    private Boolean isBroadcast;
     //重试次数
     private Integer retries;
     //若调用类型是virtual，则通过该参数判断是否从ioc容器中获取方法接收者
@@ -41,14 +39,6 @@ public class RemotingCommand implements Serializable {
 
     public void setCallType(Call callType) {
         this.callType = callType;
-    }
-
-    public Boolean getBroadcast() {
-        return isBroadcast;
-    }
-
-    public void setBroadcast(Boolean broadcast) {
-        isBroadcast = broadcast;
     }
 
     public Integer getRetries() {

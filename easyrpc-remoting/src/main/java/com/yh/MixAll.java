@@ -17,4 +17,8 @@ public class MixAll {
      */
     public static final Integer SO_BACKLOG = 128;
 
+    /**
+     * TCP长连接保持秒数
+     */
+    public static final Integer KEEP_ALIVE = 600;
 }
