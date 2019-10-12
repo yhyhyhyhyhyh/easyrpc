@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="easyrpc-registry" />
         <module name="easyrpc-remoting" />
+        <module name="monitor" />
         <module name="registry" />
       </profile>
     </annotationProcessing>
@@ -15,6 +16,7 @@
       <module name="easyrpc" target="1.7" />
       <module name="easyrpc-registry" target="1.7" />
       <module name="easyrpc-remoting" target="1.7" />
+      <module name="monitor" target="1.7" />
       <module name="registry" target="1.7" />
     </bytecodeTargetLevel>
   </component>

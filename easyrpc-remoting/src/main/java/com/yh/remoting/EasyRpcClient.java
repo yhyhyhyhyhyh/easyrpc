@@ -9,6 +9,7 @@ import com.yh.registry.JdbcRegistryCenter;
 import com.yh.registry.LoadBalancingStrategy;
 import com.yh.registry.RandomStrategy;
 import com.yh.registry.RegistryCenter;
+import com.yh.rpc.Request;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -98,8 +99,21 @@ public class EasyRpcClient {
         return nettyClient.isAvailable();
     }
 
+    public RpcResult sendRequest(RemotingCommand remotingCommand,int waitMills) {
+        String token = getInstanceProperty("token");
+        Request request = new Request();
+        request.setRemotingCommand(remotingCommand);
+        request.setWaitMillSeconds(waitMills);
+        request.setToken(token);
+        return request.getRpcResult();
+    }
+
     public RpcResult sendRequest(RemotingCommand remotingCommand) {
-        return null;
+        String token = getInstanceProperty("token");
+        Request request = new Request();
+        request.setRemotingCommand(remotingCommand);
+        request.setToken(token);
+        return request.getRpcResult();
     }
 
 }

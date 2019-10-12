@@ -10,6 +10,8 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.timeout.ReadTimeoutHandler;
+import org.springframework.context.ApplicationContext;
+
 import java.util.concurrent.TimeUnit;
 
 public class NettyServer {
@@ -21,7 +23,11 @@ public class NettyServer {
 
     private EventLoopGroup childGroup = null;
 
-    public NettyServer(String hostname,Integer port) {
+    private String token;
+
+    private ApplicationContext ac;
+
+    public NettyServer(Integer port) {
         this.port = port;
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
@@ -62,5 +68,6 @@ public class NettyServer {
             e.printStackTrace();
         }
     }
+
 
 }

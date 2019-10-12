@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/easyrpc.iml" filepath="$PROJECT_DIR$/easyrpc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/easyrpc-monitor/easyrpc-monitor.iml" filepath="$PROJECT_DIR$/easyrpc-monitor/easyrpc-monitor.iml" />
       <module fileurl="file://$PROJECT_DIR$/easyrpc-registry/easyrpc-registry.iml" filepath="$PROJECT_DIR$/easyrpc-registry/easyrpc-registry.iml" />
       <module fileurl="file://$PROJECT_DIR$/easyrpc-remoting/easyrpc-remoting.iml" filepath="$PROJECT_DIR$/easyrpc-remoting/easyrpc-remoting.iml" />
     </modules>

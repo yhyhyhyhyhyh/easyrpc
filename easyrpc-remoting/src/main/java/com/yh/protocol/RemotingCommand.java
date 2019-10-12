@@ -49,7 +49,7 @@ public class RemotingCommand implements Serializable {
         this.retries = retries;
     }
 
-    public Boolean getIocBean() {
+    public Boolean isIocBean() {
         return isIocBean;
     }
 
