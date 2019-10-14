@@ -1,12 +1,21 @@
 package com.yh.remoting;
 
+import com.yh.ReflectUtil;
+import com.yh.RemotingException;
+import com.yh.protocol.Call;
 import com.yh.protocol.ConnectRequest;
 import com.yh.protocol.RemotingCommand;
+import com.yh.protocol.RpcResult;
 import com.yh.rpc.Request;
+import com.yh.rpc.Response;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
+import org.springframework.context.ApplicationContext;
+import org.springframework.util.ReflectionUtils;
+import org.springframework.util.StringUtils;
 
+import java.lang.reflect.Method;
 import java.net.SocketAddress;
 
 /**
@@ -16,12 +25,16 @@ public class NettyServerHandlerImpl extends ChannelHandlerAdapter implements Net
 
     private String token;
 
-    public NettyServerHandlerImpl(String token) {
+    private ApplicationContext ac;
+
+    public NettyServerHandlerImpl(String token,ApplicationContext ac) {
         this.token = token;
+        this.ac = ac;
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        System.out.println(11);
         if(msg instanceof Request) {
             messageRecived(ctx,(Request)msg);
         }
@@ -35,15 +48,42 @@ public class NettyServerHandlerImpl extends ChannelHandlerAdapter implements Net
 
     @Override
     public void connect(ChannelHandlerContext ctx, SocketAddress remoteAddress, SocketAddress localAddress, ChannelPromise promise) throws Exception {
+        System.out.println(111);
         super.connect(ctx, remoteAddress, localAddress, promise);
 
     }
 
     @Override
     public void messageRecived(ChannelHandlerContext ctx, Request request) {
-        RemotingCommand command = request.getRemotingCommand();
-        Boolean isIoc = command.isIocBean();
+        Long requestId = request.getRequestId();
+        try {
+            RemotingCommand command = request.getRemotingCommand();
+            Boolean isIoc = command.isIocBean();
+            if(isIoc && command.getCallType() == Call.VIRTUAL) {
+                if( ac == null) {
+                    ctx.writeAndFlush(new Response(requestId,new RemotingException("不存在可用的ApplicationContext")));
+                    return;
+                }
 
+                Object acceptor = command.getBeanName()==null || "".equals(command.getBeanName())?
+                        ac.getBean(Class.forName(command.getClassName())):ac.getBean(command.getBeanName());
+                Object result = ReflectUtil.doVirtualMethod(acceptor,command);
+                ctx.writeAndFlush(new Response(requestId,new RpcResult(result)));
+                return;
+            } else if(command.getCallType() == Call.VIRTUAL) {
+                Object acceptor = Class.forName(command.getClassName());
+                Object result = ReflectUtil.doVirtualMethod(acceptor,command);
+                ctx.writeAndFlush(new Response(requestId,new RpcResult(result)));
+            } else if(command.getCallType() == Call.STATIC) {
+                Object result = ReflectUtil.doStaticMethod(Class.forName(command.getClassName()),command);
+                ctx.writeAndFlush(new Response(requestId,new RpcResult(result)));
+            }
+        } catch (Exception e) {
+            ctx.writeAndFlush(new Response(requestId,new RemotingException(e.getMessage())));
+            return;
+        } finally {
+            ctx.fireChannelRead(request);
+        }
     }
 
     @Override

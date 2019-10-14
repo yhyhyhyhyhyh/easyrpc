@@ -21,4 +21,9 @@ public class MixAll {
      * TCP长连接保持秒数
      */
     public static final Integer KEEP_ALIVE = 600;
+
+    /**
+     * 连接超时时间
+     */
+    public static final Integer CONNECTION_TIMEOUT = 5000;
 }

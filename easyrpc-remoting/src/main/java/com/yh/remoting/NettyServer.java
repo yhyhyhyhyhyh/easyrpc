@@ -3,9 +3,7 @@ package com.yh.remoting;
 import com.yh.MarshallingCodeCFactory;
 import com.yh.MixAll;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -27,8 +25,10 @@ public class NettyServer {
 
     private ApplicationContext ac;
 
-    public NettyServer(Integer port) {
+
+    public NettyServer(Integer port,String token,ApplicationContext ac) {
         this.port = port;
+        this.ac = ac;
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
@@ -58,16 +58,21 @@ public class NettyServer {
                             nioSocketChannel.pipeline().addLast(MarshallingCodeCFactory.buildMarshallingEncoder())
                                     .addLast(MarshallingCodeCFactory.buildMarshallingDecoder())
                                     //长连接保持10min
-                                    .addLast(new ReadTimeoutHandler(MixAll.KEEP_ALIVE, TimeUnit.SECONDS))
-                                    //.addLast(new ServerMessageHandler())
-                            ;
+                                    //.addLast(new ReadTimeoutHandler(MixAll.KEEP_ALIVE, TimeUnit.SECONDS))
+                                    .addLast(new NettyServerHandlerImpl(token,ac));
                         }
                     });
-            bootstrap.bind(port).sync();
+            ChannelFuture cf = bootstrap.bind(port).sync();
+            //cf.channel().closeFuture().sync();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    public static void main(String[] args) throws InterruptedException {
+        NettyServer server = new NettyServer(8085,"1",null);
+        server.start();
+        Thread.sleep(100000000);
+    }
 
 }

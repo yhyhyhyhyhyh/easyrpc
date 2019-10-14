@@ -16,10 +16,11 @@ public class EasyRpcServer implements ApplicationContextAware {
 
     private ApplicationContext ac;
 
+    private Integer port;
+
     public  EasyRpcServer(Integer port) {
-        this.nettyServer = new NettyServer(port);
+        this.port = port;
         this.token = UUID.randomUUID().toString();
-        nettyServer.start();
     }
 
     private void regist() {
@@ -37,19 +38,8 @@ public class EasyRpcServer implements ApplicationContextAware {
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.ac = applicationContext;
+        this.nettyServer = new NettyServer(port,token,ac);
+        nettyServer.start();
     }
 
-    private Object getBeanByClass(Class clazz) {
-        if(ac == null) {
-            throw new RemotingException("该服务提供者不支持IOC");
-        }
-        return ac.getBean(clazz);
-    }
-
-    private Object getBeanByName(String beanName) {
-        if(ac == null) {
-            throw new RemotingException("该服务提供者不支持IOC");
-        }
-        return ac.getBean(beanName);
-    }
 }

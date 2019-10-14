@@ -10,8 +10,11 @@ import com.yh.registry.LoadBalancingStrategy;
 import com.yh.registry.RandomStrategy;
 import com.yh.registry.RegistryCenter;
 import com.yh.rpc.Request;
+import com.yh.rpc.Request2ResponseContext;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,9 +50,9 @@ public class EasyRpcClient {
         return client;
     }
 
-    private EasyRpcClient(String instanceName, DataSource dataSource) throws InterruptedException {
-        registryCenter = new JdbcRegistryCenter(dataSource);
-        loadBalancingStrategy = new RandomStrategy();
+    public EasyRpcClient(String instanceName, DataSource dataSource) throws InterruptedException {
+//        registryCenter = new JdbcRegistryCenter(dataSource);
+//        loadBalancingStrategy = new RandomStrategy();
         this.instanceName = instanceName;
         connectToServer(instanceName);
     }
@@ -62,14 +65,17 @@ public class EasyRpcClient {
     }
 
     private void connectToServer(String instanceName) {
-        Map<String,Object> instance = doConnectToServer(registryCenter.gethostNameListByInstanceName(instanceName));
+        Map<String,Object> instance = doConnectToServer(new ArrayList<Map<String, Object>>());
         this.instance = instance;
     }
 
 
 
     private Map<String,Object> doConnectToServer(List<Map<String,Object>> instanceList) {
-        Map<String,Object> instance = loadBalancingStrategy.loadBalanceing(instanceList);
+        //Map<String,Object> instance = loadBalancingStrategy.loadBalanceing(instanceList);
+        Map<String,Object> instance = new HashMap<String,Object>();
+        instance.put("ip","127.0.0.1");
+        instance.put("port","8085");
         try {
             if(instance == null || instance.isEmpty()) {
                 throw new RemotingException("实例不存在可用的主机");
@@ -79,6 +85,7 @@ public class EasyRpcClient {
             return instance;
         } catch (Exception e) {
             if(instance != null && !instance.isEmpty()) {
+                instanceList.remove(instance);
                 return doConnectToServer(instanceList);
             } else {
                 throw new RemotingException("实例不存在可用的主机");
@@ -105,6 +112,7 @@ public class EasyRpcClient {
         request.setRemotingCommand(remotingCommand);
         request.setWaitMillSeconds(waitMills);
         request.setToken(token);
+        nettyClient.writeAndFlush(request);
         return request.getRpcResult();
     }
 
@@ -113,6 +121,8 @@ public class EasyRpcClient {
         Request request = new Request();
         request.setRemotingCommand(remotingCommand);
         request.setToken(token);
+        nettyClient.writeAndFlush(request);
+        Request2ResponseContext.addResponseFuture(request.getRequestId(),request.getResponseFuture());
         return request.getRpcResult();
     }
 

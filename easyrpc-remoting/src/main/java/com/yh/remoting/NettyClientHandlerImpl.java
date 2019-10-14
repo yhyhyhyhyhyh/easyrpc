@@ -6,15 +6,22 @@ import com.yh.rpc.ResponseFuture;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
+import io.netty.util.ReferenceCountUtil;
+
 import java.net.SocketAddress;
 
 public class NettyClientHandlerImpl extends ChannelHandlerAdapter implements NettyClientHandler{
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if(msg instanceof Response) {
-            Response response = (Response)msg;
-            messageRecived(ctx,response);
+        try {
+            System.out.println(11);
+            if(msg instanceof Response) {
+                Response response = (Response)msg;
+                messageRecived(ctx,response);
+            }
+        } finally {
+            ReferenceCountUtil.release(msg);
         }
     }
 

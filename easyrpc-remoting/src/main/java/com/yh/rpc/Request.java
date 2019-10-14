@@ -4,9 +4,10 @@ import com.yh.RemotingException;
 import com.yh.protocol.RemotingCommand;
 import com.yh.protocol.RpcResult;
 
+import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class Request {
+public class Request implements Serializable{
 
     private RemotingCommand remotingCommand;
 

@@ -4,7 +4,9 @@ package com.yh.rpc;
 import com.yh.RemotingException;
 import com.yh.protocol.RpcResult;
 
-public class Response {
+import java.io.Serializable;
+
+public class Response implements Serializable{
 
     private RpcResult rpcResult;
 
@@ -34,5 +36,15 @@ public class Response {
 
     public void setException(RemotingException exception) {
         this.exception = exception;
+    }
+
+    public Response(Long requestId, RemotingException exception) {
+        this.requestId = requestId;
+        this.exception = exception;
+    }
+
+    public Response( Long requestId,RpcResult rpcResult) {
+        this.rpcResult = rpcResult;
+        this.requestId = requestId;
     }
 }

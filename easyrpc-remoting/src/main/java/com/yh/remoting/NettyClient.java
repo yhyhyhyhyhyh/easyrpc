@@ -20,12 +20,12 @@ public class NettyClient {
 
     private EventLoopGroup group = null;
 
-    NettyClient(String hostname,Integer port) {
+    public NettyClient(String hostname,Integer port) {
         this.hostname = hostname;
         this.port = port;
     }
 
-    synchronized void doConnect() throws InterruptedException {
+    public synchronized void doConnect() throws InterruptedException {
         if(hostname == null || port == null || port<1 || port>65534) {
             throw new RemotingException(String.format("不合法的hostname或端口.hostname:%s,端口%d",hostname,port));
         }
@@ -37,17 +37,23 @@ public class NettyClient {
                     //.option(ChannelOption.TCP_NODELAY, true)
                     .option(ChannelOption.SO_RCVBUF, MixAll.SO_RCVBUF)
                     .option(ChannelOption.SO_SNDBUF, MixAll.SO_SNDBUF)
+                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 1)
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
                             socketChannel.pipeline().addLast(MarshallingCodeCFactory.buildMarshallingEncoder())
-                                    .addLast(MarshallingCodeCFactory.buildMarshallingDecoder());
-                                    //.addLast(new IdleStateHandler());
-                                    //.addLast(new ClientMessageHandler());
+                                    .addLast(MarshallingCodeCFactory.buildMarshallingDecoder())
+                                    .addLast(new NettyClientHandlerImpl());
                         }
                     });
             ChannelFuture cf =  bootstrap.connect(hostname,port).sync();
             this.channel = cf.channel();
+            Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    shutdownEventLoopGroup();
+                }
+            }));
         } catch (Exception e) {
             throw new RemotingException(e.getMessage());
         }
@@ -64,4 +70,9 @@ public class NettyClient {
         return channel.isActive();
     }
 
+    public void writeAndFlush(Object object) {
+        if(channel.isActive()) {
+            channel.writeAndFlush(object);
+        }
+    }
 }

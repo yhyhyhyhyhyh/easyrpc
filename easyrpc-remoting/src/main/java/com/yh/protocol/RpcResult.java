@@ -14,4 +14,8 @@ public class RpcResult implements Serializable {
     public void setResult(Object result) {
         this.result = result;
     }
+
+    public RpcResult(Object result) {
+        this.result = result;
+    }
 }
