@@ -11,6 +11,8 @@ public class Instance {
 
     private Integer port;
 
+    private String token;
+
     public String getHostname() {
         return hostname;
     }
@@ -41,5 +43,13 @@ public class Instance {
 
     public void setPort(Integer port) {
         this.port = port;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

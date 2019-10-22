@@ -10,7 +10,7 @@ public class ReflectUtil {
 
     public static Object doVirtualMethod(Object acceptor,RemotingCommand command) {
         try {
-            Object[] parameters = command.getParameters().parameters;
+            Object[] parameters = command.getArgs().args;
             Class[] parameterClass = new Class[parameters == null?0:parameters.length];
             for(int i = 0,len=parameterClass.length;i<len;i++) {
                 parameterClass[i] = parameters[i].getClass();
@@ -24,7 +24,7 @@ public class ReflectUtil {
 
     public static Object doStaticMethod(Class clazz,RemotingCommand command) {
         try {
-            Object[] parameters = command.getParameters().parameters;
+            Object[] parameters = command.getArgs().args;
             Class[] parameterClass = new Class[parameters == null?0:parameters.length];
             for(int i = 0,len=parameterClass.length;i<len;i++) {
                 parameterClass[i] = parameters[i].getClass();

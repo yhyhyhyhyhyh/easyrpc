@@ -22,5 +22,15 @@ public interface RegistryCenter {
      */
     Boolean registInstance(Instance instance);
 
+    /**
+     * 更新心跳时间
+     * @param instance
+     */
+    void heartBeat(Instance instance);
 
+    /**
+     * 注销实例
+     * @param instance
+     */
+    void unregistInstance(Instance instance);
 }

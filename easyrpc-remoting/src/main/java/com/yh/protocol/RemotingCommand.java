@@ -11,15 +11,17 @@ public class RemotingCommand implements Serializable {
     //方法名
     private String methodName;
     //方法调用类型
-    private Call callType;
+    private Call callType = Call.VIRTUAL;
     //方法入参
-    private ParameterHolder parameters;
+    private ParameterHolder args;
     //重试次数
-    private Integer retries;
+    private Integer retries = 0;
     //若调用类型是virtual，则通过该参数判断是否从ioc容器中获取方法接收者
-    private Boolean isIocBean;
+    private Boolean isIocBean = Boolean.FALSE;
     //若从ioc容器中获取方法接收者，则可根据beanName获取，若该字段为空，则根据类型获取
     private String beanName;
+    //若类型是VIRTUAL，且实例构造器存在参数，则需要传入构造器参数
+    private ParameterHolder constructorArgs = new ParameterHolder(null);
 
 
     public String getInstanceId() {
@@ -62,12 +64,12 @@ public class RemotingCommand implements Serializable {
         isIocBean = iocBean;
     }
 
-    public ParameterHolder getParameters() {
-        return parameters;
+    public ParameterHolder getArgs() {
+        return args;
     }
 
-    public void setParameters(ParameterHolder parameters) {
-        this.parameters = parameters;
+    public void setArgs(ParameterHolder args) {
+        this.args = args;
     }
 
     public Boolean getIocBean() {
@@ -88,5 +90,13 @@ public class RemotingCommand implements Serializable {
 
     public void setMethodName(String methodName) {
         this.methodName = methodName;
+    }
+
+    public ParameterHolder getConstructorArg() {
+        return constructorArgs;
+    }
+
+    public void setConstructorArgs(ParameterHolder constructorArgs) {
+        this.constructorArgs = constructorArgs;
     }
 }

@@ -5,10 +5,10 @@ import java.io.Serializable;
 
 public class ParameterHolder implements Serializable{
 
-    public Object[] parameters;
+    public Object[] args;
 
-    public ParameterHolder(Object[] parameters) {
-        this.parameters = parameters;
+    public ParameterHolder(Object[] args) {
+        this.args = args;
     }
 
 }

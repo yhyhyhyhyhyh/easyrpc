@@ -12,10 +12,8 @@ import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import org.springframework.context.ApplicationContext;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.util.StringUtils;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.Constructor;
 import java.net.SocketAddress;
 
 /**
@@ -34,9 +32,14 @@ public class NettyServerHandlerImpl extends ChannelHandlerAdapter implements Net
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        System.out.println(11);
         if(msg instanceof Request) {
-            messageRecived(ctx,(Request)msg);
+            Request request = (Request)msg;
+            if(token.equals(request.getToken())) {
+                messageRecived(ctx,(Request)msg);
+            } else {
+                ctx.writeAndFlush("token校验失败");
+                ctx.channel().close();
+            }
         }
     }
 
@@ -48,7 +51,6 @@ public class NettyServerHandlerImpl extends ChannelHandlerAdapter implements Net
 
     @Override
     public void connect(ChannelHandlerContext ctx, SocketAddress remoteAddress, SocketAddress localAddress, ChannelPromise promise) throws Exception {
-        System.out.println(111);
         super.connect(ctx, remoteAddress, localAddress, promise);
 
     }
@@ -71,7 +73,9 @@ public class NettyServerHandlerImpl extends ChannelHandlerAdapter implements Net
                 ctx.writeAndFlush(new Response(requestId,new RpcResult(result)));
                 return;
             } else if(command.getCallType() == Call.VIRTUAL) {
-                Object acceptor = Class.forName(command.getClassName());
+                Class acceptorClass = Class.forName(command.getClassName());
+                Constructor acceptorConstructor = acceptorClass.getConstructor();
+                Object acceptor = acceptorConstructor.newInstance(command.getConstructorArg().args == null?null:command.getConstructorArg().args);
                 Object result = ReflectUtil.doVirtualMethod(acceptor,command);
                 ctx.writeAndFlush(new Response(requestId,new RpcResult(result)));
             } else if(command.getCallType() == Call.STATIC) {
@@ -79,10 +83,11 @@ public class NettyServerHandlerImpl extends ChannelHandlerAdapter implements Net
                 ctx.writeAndFlush(new Response(requestId,new RpcResult(result)));
             }
         } catch (Exception e) {
+            e.printStackTrace();
             ctx.writeAndFlush(new Response(requestId,new RemotingException(e.getMessage())));
             return;
         } finally {
-            ctx.fireChannelRead(request);
+            //ctx.fireChannelRead(request);
         }
     }
 

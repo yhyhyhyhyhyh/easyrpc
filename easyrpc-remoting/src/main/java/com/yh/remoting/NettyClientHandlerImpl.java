@@ -12,13 +12,20 @@ import java.net.SocketAddress;
 
 public class NettyClientHandlerImpl extends ChannelHandlerAdapter implements NettyClientHandler{
 
+    private NettyClient client;
+
+    public NettyClientHandlerImpl(NettyClient client)  {
+        this.client = client;
+    }
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         try {
-            System.out.println(11);
             if(msg instanceof Response) {
                 Response response = (Response)msg;
                 messageRecived(ctx,response);
+            } else if( msg instanceof String) {
+                //TODO 收集错误信息
             }
         } finally {
             ReferenceCountUtil.release(msg);
@@ -42,5 +49,10 @@ public class NettyClientHandlerImpl extends ChannelHandlerAdapter implements Net
         ResponseFuture responseFuture = Request2ResponseContext.getResponseFuture(requestId);
         responseFuture.setResponse(response);
         responseFuture.Received();
+    }
+
+    @Override
+    public void close(ChannelHandlerContext ctx, ChannelPromise promise) throws Exception {
+
     }
 }

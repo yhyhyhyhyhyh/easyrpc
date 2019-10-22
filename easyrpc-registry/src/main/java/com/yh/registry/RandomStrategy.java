@@ -14,6 +14,6 @@ public class RandomStrategy implements LoadBalancingStrategy{
         if( instanceList == null || instanceList.size() == 0) {
             return new HashMap<>();
         }
-        return instanceList.get((int)(Math.random()*instanceList.size()));
+        return instanceList.get((int)(Math.random()*(instanceList.size()-1)));
     }
 }

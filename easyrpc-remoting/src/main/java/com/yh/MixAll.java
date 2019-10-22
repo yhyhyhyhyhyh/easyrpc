@@ -18,12 +18,17 @@ public class MixAll {
     public static final Integer SO_BACKLOG = 128;
 
     /**
-     * TCP长连接保持秒数
+     * 读超时
      */
-    public static final Integer KEEP_ALIVE = 600;
+    public static final Integer READ_TIMEOUT = 600;
 
     /**
      * 连接超时时间
      */
     public static final Integer CONNECTION_TIMEOUT = 5000;
+
+    /**
+     * 服务提供者心跳次数
+     */
+    public static final Integer HEART_BEAT = 30;
 }

@@ -12,13 +12,13 @@ public class ResponseFuture implements Serializable{
 
     private volatile Response response;
 
-    private long requestId;
+    private Long requestId;
 
-    private final Lock lock = new ReentrantLock();
+    private final transient Lock lock = new ReentrantLock();
 
-    private final Condition hasResponse = lock.newCondition();
+    private final transient Condition hasResponse = lock.newCondition();
 
-    public ResponseFuture(long requestId) {
+    public ResponseFuture(Long requestId) {
         this.requestId = requestId;
     }
 

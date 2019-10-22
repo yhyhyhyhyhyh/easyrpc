@@ -12,7 +12,7 @@ public class EasyRpcClientCache {
 
     public static EasyRpcClient getClient(String instanceName) {
         EasyRpcClient client = clientMap.get(instanceName);
-        if(!client.isAvailable()) {
+        if(client!=null&&!client.isAvailable()) {
             clientMap.remove(instanceName);
             return null;
         } else {

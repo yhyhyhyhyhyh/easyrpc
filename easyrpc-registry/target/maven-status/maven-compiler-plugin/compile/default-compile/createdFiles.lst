@@ -1,0 +1,5 @@
+com\yh\registry\RandomStrategy.class
+com\yh\registry\JdbcRegistryCenter.class
+com\yh\registry\model\Instance.class
+com\yh\registry\LoadBalancingStrategy.class
+com\yh\registry\RegistryCenter.class

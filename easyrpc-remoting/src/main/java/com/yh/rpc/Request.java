@@ -15,7 +15,7 @@ public class Request implements Serializable{
 
     private transient ResponseFuture responseFuture;
 
-    private long requestId;
+    private Long requestId;
 
     private int waitMillSeconds = 10*1000;
 

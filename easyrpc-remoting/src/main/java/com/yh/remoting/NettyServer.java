@@ -8,8 +8,15 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.timeout.ReadTimeoutHandler;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
 import org.springframework.context.ApplicationContext;
 
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class NettyServer {
@@ -21,25 +28,13 @@ public class NettyServer {
 
     private EventLoopGroup childGroup = null;
 
-    private String token;
+    private EasyRpcServer server;
 
-    private ApplicationContext ac;
+    private ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(1);
 
-
-    public NettyServer(Integer port,String token,ApplicationContext ac) {
+    public NettyServer(Integer port,EasyRpcServer server) {
         this.port = port;
-        this.ac = ac;
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                if(parentGroup != null) {
-                    parentGroup.shutdownGracefully();
-                }
-                if(childGroup != null) {
-                    childGroup.shutdownGracefully();
-                }
-            }
-        });
+        this.server = server;
     }
 
     public void start() {
@@ -58,21 +53,24 @@ public class NettyServer {
                             nioSocketChannel.pipeline().addLast(MarshallingCodeCFactory.buildMarshallingEncoder())
                                     .addLast(MarshallingCodeCFactory.buildMarshallingDecoder())
                                     //长连接保持10min
-                                    //.addLast(new ReadTimeoutHandler(MixAll.KEEP_ALIVE, TimeUnit.SECONDS))
-                                    .addLast(new NettyServerHandlerImpl(token,ac));
+                                    .addLast(new ReadTimeoutHandler(MixAll.READ_TIMEOUT, TimeUnit.SECONDS))
+                                    .addLast(new NettyServerHandlerImpl(server.getToken(),server.getAc()));
                         }
                     });
             ChannelFuture cf = bootstrap.bind(port).sync();
-            //cf.channel().closeFuture().sync();
+            cf.channel().closeFuture().addListener(new GenericFutureListener<Future<? super Void>>() {
+                @Override
+                public void operationComplete(Future<? super Void> future) throws Exception {
+                    if(parentGroup != null) {
+                        parentGroup.shutdownGracefully();
+                    }
+                    if(childGroup != null) {
+                        childGroup.shutdownGracefully();
+                    }
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-    public static void main(String[] args) throws InterruptedException {
-        NettyServer server = new NettyServer(8085,"1",null);
-        server.start();
-        Thread.sleep(100000000);
-    }
-
 }

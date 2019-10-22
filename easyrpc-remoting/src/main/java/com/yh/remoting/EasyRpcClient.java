@@ -11,10 +11,8 @@ import com.yh.registry.RandomStrategy;
 import com.yh.registry.RegistryCenter;
 import com.yh.rpc.Request;
 import com.yh.rpc.Request2ResponseContext;
-
 import javax.sql.DataSource;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,29 +28,36 @@ public class EasyRpcClient {
 
     private Map<String,Object> instance;
 
-    public EasyRpcClient getInstance(String instanceName, DataSource dataSource) throws InterruptedException {
+
+    public static EasyRpcClient getInstance(String instanceName, DataSource dataSource) throws InterruptedException {
         EasyRpcClient client = EasyRpcClientCache.getClient(instanceName);
         if(client == null) {
-            client =  new EasyRpcClient(instanceName,dataSource);
-            EasyRpcClientCache.addClient(instanceName,client);
-            return client;
+            synchronized (EasyRpcClient.class) {
+                client = EasyRpcClientCache.getClient(instanceName);
+                if(client == null) {
+                    client =  new EasyRpcClient(instanceName,dataSource);
+                    EasyRpcClientCache.addClient(instanceName,client);
+                }
+            }
         }
         return client;
     }
 
-    public EasyRpcClient getInstance(String instanceName,RegistryCenter registryCenter,LoadBalancingStrategy loadBalancingStrategy) throws InterruptedException {
+    public static EasyRpcClient getInstance(String instanceName,RegistryCenter registryCenter,LoadBalancingStrategy loadBalancingStrategy) throws InterruptedException {
         EasyRpcClient client = EasyRpcClientCache.getClient(instanceName);
-        if(client == null) {
-            client =  new EasyRpcClient(instanceName,registryCenter,loadBalancingStrategy);
-            EasyRpcClientCache.addClient(instanceName,client);
-            return client;
+        synchronized (EasyRpcClient.class) {
+            client = EasyRpcClientCache.getClient(instanceName);
+            if(client == null) {
+                client =  new EasyRpcClient(instanceName,registryCenter,loadBalancingStrategy);
+                EasyRpcClientCache.addClient(instanceName,client);
+            }
         }
         return client;
     }
 
-    public EasyRpcClient(String instanceName, DataSource dataSource) throws InterruptedException {
-//        registryCenter = new JdbcRegistryCenter(dataSource);
-//        loadBalancingStrategy = new RandomStrategy();
+    private EasyRpcClient(String instanceName, DataSource dataSource) throws InterruptedException {
+        registryCenter = new JdbcRegistryCenter(dataSource);
+        loadBalancingStrategy = new RandomStrategy();
         this.instanceName = instanceName;
         connectToServer(instanceName);
     }
@@ -65,25 +70,23 @@ public class EasyRpcClient {
     }
 
     private void connectToServer(String instanceName) {
-        Map<String,Object> instance = doConnectToServer(new ArrayList<Map<String, Object>>());
+        Map<String,Object> instance = doConnectToServer(registryCenter.gethostNameListByInstanceName(instanceName));
         this.instance = instance;
     }
 
 
 
     private Map<String,Object> doConnectToServer(List<Map<String,Object>> instanceList) {
-        //Map<String,Object> instance = loadBalancingStrategy.loadBalanceing(instanceList);
-        Map<String,Object> instance = new HashMap<String,Object>();
-        instance.put("ip","127.0.0.1");
-        instance.put("port","8085");
+        Map<String,Object> instance = loadBalancingStrategy.loadBalanceing(instanceList);
         try {
             if(instance == null || instance.isEmpty()) {
                 throw new RemotingException("实例不存在可用的主机");
             }
-            this.nettyClient = new NettyClient((String)instance.get("ip"),Integer.parseInt((String)instance.get("port")));
+            this.nettyClient = new NettyClient((String)instance.get("ip"),(Integer)instance.get("port"));
             nettyClient.doConnect();
             return instance;
         } catch (Exception e) {
+            e.printStackTrace();
             if(instance != null && !instance.isEmpty()) {
                 instanceList.remove(instance);
                 return doConnectToServer(instanceList);
@@ -107,23 +110,59 @@ public class EasyRpcClient {
     }
 
     public RpcResult sendRequest(RemotingCommand remotingCommand,int waitMills) {
-        String token = getInstanceProperty("token");
-        Request request = new Request();
-        request.setRemotingCommand(remotingCommand);
-        request.setWaitMillSeconds(waitMills);
-        request.setToken(token);
-        nettyClient.writeAndFlush(request);
-        return request.getRpcResult();
+        if(!isAvailable()) {
+            connectToServer(instanceName);
+        }
+        //实际尝试次数为retries+1
+        for(int i =0;i<=remotingCommand.getRetries()-1;i++) {
+            try {
+                String token = getInstanceProperty("token");
+                Request request = new Request();
+                request.setRemotingCommand(remotingCommand);
+                request.setWaitMillSeconds(waitMills);
+                request.setToken(token);
+                nettyClient.writeAndFlush(request);
+                Request2ResponseContext.addResponseFuture(request.getRequestId(),request.getResponseFuture());
+                return request.getRpcResult();
+            } catch (Exception e) {
+                //若发送请求失败，且与服务提供者连接断开，尝试重新连接
+                if(!isAvailable()) {
+                    connectToServer(instanceName);
+                }
+            }
+        }
+        return null;
     }
 
     public RpcResult sendRequest(RemotingCommand remotingCommand) {
-        String token = getInstanceProperty("token");
-        Request request = new Request();
-        request.setRemotingCommand(remotingCommand);
-        request.setToken(token);
-        nettyClient.writeAndFlush(request);
-        Request2ResponseContext.addResponseFuture(request.getRequestId(),request.getResponseFuture());
-        return request.getRpcResult();
+        long retris = remotingCommand.getRetries();
+        if(retris == -1) {
+            retris = Integer.MAX_VALUE;
+        }
+        //实际尝试次数为retries+1
+        for(int i =0;i<=retris+1;i++) {
+            if(!isAvailable()) {
+                connectToServer(instanceName);
+            }
+            try {
+                String token = getInstanceProperty("token");
+                Request request = new Request();
+                request.setRemotingCommand(remotingCommand);
+                request.setToken(token);
+                nettyClient.writeAndFlush(request);
+                Request2ResponseContext.addResponseFuture(request.getRequestId(),request.getResponseFuture());
+                return request.getRpcResult();
+            } catch (Exception e) {
+                e.printStackTrace();
+                //若发送请求失败，且与服务提供者连接断开，尝试重新连接
+                if(!isAvailable()) {
+                    connectToServer(instanceName);
+                } else {
+                    throw new RemotingException(e.getMessage());
+                }
+            }
+        }
+        return null;
     }
 
 }
