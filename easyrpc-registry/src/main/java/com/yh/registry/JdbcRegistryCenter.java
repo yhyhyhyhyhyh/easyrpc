@@ -1,5 +1,6 @@
 package com.yh.registry;
 
+import com.yh.registry.jdbc.JdbcTemplateRepository;
 import com.yh.registry.model.Instance;
 import org.springframework.jdbc.core.JdbcTemplate;
 import javax.sql.DataSource;
@@ -11,13 +12,10 @@ import java.util.Map;
  */
 public class JdbcRegistryCenter implements RegistryCenter {
 
-    private DataSource dataSource;
-
     private JdbcTemplate jdbcTemplate;
 
     public JdbcRegistryCenter(DataSource dataSource) {
-        this.dataSource = dataSource;
-        jdbcTemplate = new JdbcTemplate(dataSource);
+        this.jdbcTemplate = JdbcTemplateRepository.getInstance(dataSource);
     }
 
     @Override

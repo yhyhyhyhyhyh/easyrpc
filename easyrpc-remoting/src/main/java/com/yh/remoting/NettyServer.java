@@ -53,7 +53,7 @@ public class NettyServer {
                             nioSocketChannel.pipeline().addLast(MarshallingCodeCFactory.buildMarshallingEncoder())
                                     .addLast(MarshallingCodeCFactory.buildMarshallingDecoder())
                                     //长连接保持10min
-                                    .addLast(new ReadTimeoutHandler(MixAll.READ_TIMEOUT, TimeUnit.SECONDS))
+                                    //.addLast(new ReadTimeoutHandler(MixAll.READ_TIMEOUT, TimeUnit.SECONDS))
                                     .addLast(new NettyServerHandlerImpl(server.getToken(),server.getAc()));
                         }
                     });
