@@ -1,7 +1,7 @@
 
-^squid:UselessImportCheck"5Remove this unused import 'com.yh.RemotingException'.(’âıÿÿÿÿ
 dsquid:UselessImportCheck";Remove this unused import 'java.util.concurrent.Executors'.(äåÒÛÿÿÿÿÿ
 ¤%squid:RedundantThrowsDeclarationCheck_"sRemove the declaration of thrown exception 'org.springframework.beans.BeansException' which is a runtime exception.(¯¶…œ
-Hsquid:S1172(",Remove this unused method parameter "isIoc".(àÌù ıÿÿÿÿ
-?squid:S1148f"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ
 ?squid:S1148P"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ
+?squid:S1148f"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ
+Hsquid:S1172(",Remove this unused method parameter "isIoc".(àÌù ıÿÿÿÿ
+^squid:UselessImportCheck"5Remove this unused import 'com.yh.RemotingException'.(’âıÿÿÿÿ

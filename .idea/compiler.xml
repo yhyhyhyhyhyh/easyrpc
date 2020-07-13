@@ -6,20 +6,21 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="easyrpc-all" />
-        <module name="easyrpc-monitor" />
-        <module name="easyrpc-registry" />
         <module name="easyrpc-remoting" />
+        <module name="easyrpc-registry" />
         <module name="easyrpcall" />
-        <module name="monitor" />
         <module name="registry" />
+        <module name="easyrpc-monitor" />
+        <module name="easyrpc-config-spring" />
+        <module name="monitor" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="easyrpc" target="1.7" />
+      <module name="easyrpc" target="1.8" />
       <module name="easyrpc-all" target="1.7" />
+      <module name="easyrpc-config-spring" target="1.8" />
       <module name="easyrpc-monitor" target="1.7" />
-      <module name="easyrpc-registry" target="1.7" />
+      <module name="easyrpc-registry" target="1.8" />
       <module name="easyrpc-remoting" target="1.7" />
       <module name="easyrpcall" target="1.7" />
       <module name="monitor" target="1.7" />

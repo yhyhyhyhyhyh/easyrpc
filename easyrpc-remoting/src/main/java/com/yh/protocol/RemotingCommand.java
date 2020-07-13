@@ -22,7 +22,8 @@ public class RemotingCommand implements Serializable {
     private String beanName;
     //若类型是VIRTUAL，且实例构造器存在参数，则需要传入构造器参数
     private ParameterHolder constructorArgs = new ParameterHolder(null);
-
+    //被调用方法版本号,默认为1.0.0
+    private String version = "1.0.0";
 
     public String getInstanceId() {
         return instanceId;
@@ -98,5 +99,13 @@ public class RemotingCommand implements Serializable {
 
     public void setConstructorArgs(ParameterHolder constructorArgs) {
         this.constructorArgs = constructorArgs;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 }

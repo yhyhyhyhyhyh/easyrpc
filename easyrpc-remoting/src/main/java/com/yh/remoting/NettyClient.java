@@ -15,15 +15,21 @@ public class NettyClient {
 
     private Integer port;
 
+    private String token;
+
+    private Integer weight;
+
     private volatile Channel channel;
 
-    private static EventLoopGroup group = new NioEventLoopGroup();;
+    private static EventLoopGroup group = new NioEventLoopGroup();
 
 
 
-    public NettyClient(String hostname,Integer port) {
+    public NettyClient(String hostname,Integer port,String token,Integer weight) {
         this.hostname = hostname;
         this.port = port;
+        this.token = token;
+        this.weight = weight;
     }
 
     public synchronized void doConnect() throws InterruptedException {
@@ -53,11 +59,6 @@ public class NettyClient {
         }
     }
 
-    synchronized void shutdownEventLoopGroup() {
-        if(!group.isShutdown()&&!group.isShuttingDown()) {
-            group.shutdownGracefully();
-        }
-    }
 
 
     public Boolean isAvailable() {
@@ -68,5 +69,29 @@ public class NettyClient {
         if(channel.isActive()) {
             channel.writeAndFlush(object);
         }
+    }
+
+    public String getHostname() {
+        return this.hostname;
+    }
+
+    public Integer getPort() {
+        return this.port;
+    }
+
+    protected String getToken() {
+        return this.token;
+    }
+
+    protected Channel getChannel() {
+        return this.channel;
+    }
+
+    public Integer getWeight() {
+        return this.weight;
+    }
+
+    protected void setWeight(Integer weight) {
+        this.weight = weight;
     }
 }

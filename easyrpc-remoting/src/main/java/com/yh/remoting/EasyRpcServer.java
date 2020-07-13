@@ -2,28 +2,30 @@ package com.yh.remoting;
 
 
 import com.yh.MixAll;
-import com.yh.RemotingException;
 import com.yh.registry.JdbcRegistryCenter;
 import com.yh.registry.RegistryCenter;
 import com.yh.registry.model.Instance;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.SmartLifecycle;
+import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.UUID;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-public class EasyRpcServer implements ApplicationContextAware {
+public class EasyRpcServer implements ApplicationContextAware,SmartLifecycle {
 
     private NettyServer nettyServer;
 
     private String token;
+
+    private String providedToken;
 
     private ApplicationContext ac;
 
@@ -37,18 +39,25 @@ public class EasyRpcServer implements ApplicationContextAware {
 
     private Instance registedInstance;
 
-    public  EasyRpcServer(String instanceName,Integer port, DataSource dataSource,Boolean isIoc) {
+    public  EasyRpcServer(String instanceName,Integer port, DataSource dataSource,String token) {
         this.port = port;
         this.instanceName = instanceName;
         this.registryCenter = new JdbcRegistryCenter(dataSource);
         this.token = UUID.randomUUID().toString();
+        this.providedToken = token;
     }
 
-    public void start() throws UnknownHostException {
-        //非spring环境下，通过该方法手动启动
+    @Override
+    public void start()   {
+        //非spring环境下，通过该方法手动启动,spring环境下自动调用
         this.nettyServer = new NettyServer(port,this);
-        nettyServer.start();
-        regist();
+        try {
+            nettyServer.start();
+            regist();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
         startHeartBeatTask();
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
@@ -57,6 +66,16 @@ public class EasyRpcServer implements ApplicationContextAware {
                 scheduledExecutorService.shutdown();
             }
         }));
+    }
+
+    @Override
+    public void stop() {
+
+    }
+
+    @Override
+    public boolean isRunning() {
+        return false;
     }
 
     private void regist() throws UnknownHostException {
@@ -84,7 +103,11 @@ public class EasyRpcServer implements ApplicationContextAware {
     }
 
     public String getToken() {
-        return token;
+        if(StringUtils.isEmpty(providedToken)) {
+            return token;
+        } else {
+            return providedToken;
+        }
     }
 
     public void setToken(String token) {
@@ -94,14 +117,6 @@ public class EasyRpcServer implements ApplicationContextAware {
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.ac = applicationContext;
-        this.nettyServer = new NettyServer(port,this);
-        nettyServer.start();
-        try {
-            regist();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        startHeartBeatTask();
     }
 
     public ApplicationContext getAc() {
@@ -109,4 +124,18 @@ public class EasyRpcServer implements ApplicationContextAware {
     }
 
 
+    @Override
+    public boolean isAutoStartup() {
+        return true;
+    }
+
+    @Override
+    public void stop(Runnable runnable) {
+        //IGNORE
+    }
+
+    @Override
+    public int getPhase() {
+        return 0;
+    }
 }

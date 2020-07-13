@@ -102,7 +102,6 @@ under the License.
       <module filepath="$PROJECT_DIR$/easyrpc-registry/easyrpc-registry.iml"/>
       <module filepath="$PROJECT_DIR$/easyrpc-monitor/easyrpc-monitor.iml"/>
       <module filepath="$PROJECT_DIR$/easyrpc-remoting/easyrpc-remoting.iml"/>
-      <module filepath="$PROJECT_DIR$/easyrpc-all/easyrpc-all.iml"/>
     </modules> 
   </component>  
   <UsedPathMacros> 

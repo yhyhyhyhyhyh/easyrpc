@@ -28,7 +28,12 @@ public class MixAll {
     public static final Integer CONNECTION_TIMEOUT = 5000;
 
     /**
-     * 服务提供者心跳次数
+     * 服务提供者心跳间隔
      */
     public static final Integer HEART_BEAT = 30;
+
+    /**
+     * 消费者轮询间隔
+     */
+    public static final Integer QUERY_INTERVAL = 30;
 }

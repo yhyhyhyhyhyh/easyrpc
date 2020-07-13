@@ -1,8 +1,6 @@
 package com.yh.rpc;
 
-import com.yh.RemotingException;
 import com.yh.protocol.RemotingCommand;
-import com.yh.protocol.RpcResult;
 
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicLong;
@@ -54,18 +52,8 @@ public class Request implements Serializable{
         this.requestId = requestId;
     }
 
-    public RpcResult getRpcResult() {
-        Response response = responseFuture.get(waitMillSeconds);
-        if(response.getException() != null) {
-            throw response.getException();
-        } else {
-            RpcResult rpcResult = response.getRpcResult();
-            if( rpcResult != null) {
-                return rpcResult;
-            } else {
-                throw new RemotingException("响应结果为空");
-            }
-        }
+    public Response getResponse() {
+        return responseFuture.get(waitMillSeconds);
     }
 
     public void setToken(String token) {

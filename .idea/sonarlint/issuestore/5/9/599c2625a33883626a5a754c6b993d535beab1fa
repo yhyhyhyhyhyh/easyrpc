@@ -1,0 +1,5 @@
+
+ssquid:S00100‚"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ğã´áûÿÿÿÿ8Éí›òæ-
+`squid:UselessImportCheck"5Remove this unused import 'java.text.ParseException'.(ñ®ï•8åå«òæ-
+vsquid:S3776‚"RRefactor this method to reduce its Cognitive Complexity from 22 to the 15 allowed.(Ğã´áûÿÿÿÿ8‰‡Ÿòæ-
+Gsquid:S1148 "#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8§Üòæ-

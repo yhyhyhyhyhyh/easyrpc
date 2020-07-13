@@ -1,9 +1,7 @@
 
-[squid:UselessImportCheck"0Remove this unused import 'java.util.ArrayList'.(÷‰îƒ8ë¦Ù‘Ý-
-Fsquid:S1148Y"#Use a logger to log this exception.(€ÉÔ…ýÿÿÿÿ8ë¦Ù‘Ý-
-Gsquid:S1148œ"#Use a logger to log this exception.(€ÉÔ…ýÿÿÿÿ8´Ñû˜Ý-
-jsquid:HiddenFieldCheckP"<Rename "instance" which hides the field declared at line 29.(ª÷ÿ½ÿÿÿÿÿ8ë¦Ù‘Ý-
-³%squid:RedundantThrowsDeclarationCheckA"|Remove the declaration of thrown exception 'java.lang.InterruptedException', as it cannot be thrown from constructor's body.(æÓá8ë¦Ù‘Ý-
-Xsquid:S1854/":Remove this useless assignment to local variable "client".(Ãã§Œ8¹…™Ý-
-jsquid:HiddenFieldCheckI"<Rename "instance" which hides the field declared at line 29.(¨€ûÑþÿÿÿÿ8ë¦Ù‘Ý-
-´%squid:RedundantThrowsDeclarationCheck:"|Remove the declaration of thrown exception 'java.lang.InterruptedException', as it cannot be thrown from constructor's body.(“©ÿØ8ë¦Ù‘Ý-
+´%squid:RedundantThrowsDeclarationCheckN"|Remove the declaration of thrown exception 'java.lang.InterruptedException', as it cannot be thrown from constructor's body.(“©ÿØ8ê—áðæ-
+³%squid:RedundantThrowsDeclarationCheckV"|Remove the declaration of thrown exception 'java.lang.InterruptedException', as it cannot be thrown from constructor's body.(æÓá8æŒ«ïæ-
+Gsquid:S1148à"#Use a logger to log this exception.(€ÉÔ…ýÿÿÿÿ8œÓŸðæ-
+u
+squid:S135g"YReduce the total number of break and continue statements in this loop to use at most one.(žœ \8æŒ«ïæ-
+9squid:S3626s"Remove this redundant jump.(ÉŠ©ƒ8æŒ«ïæ-

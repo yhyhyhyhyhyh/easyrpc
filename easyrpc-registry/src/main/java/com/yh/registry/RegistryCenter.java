@@ -4,7 +4,6 @@ package com.yh.registry;
 import com.yh.registry.model.Instance;
 
 import java.util.List;
-import java.util.Map;
 
 public interface RegistryCenter {
 
@@ -13,7 +12,7 @@ public interface RegistryCenter {
      * @param instanceName
      * @return
      */
-    List<Map<String,Object>> gethostNameListByInstanceName(String instanceName);
+    List<Instance> getHostListByInstanceName(String instanceName);
 
     /**
      * 注册实例
@@ -33,4 +32,13 @@ public interface RegistryCenter {
      * @param instance
      */
     void unregistInstance(Instance instance);
+
+    /**
+     * 根据应用的心跳发送是否正常，判断是否使用该应用节点进行调度
+     * @param ip
+     * @param port
+     * @return
+     */
+    int checkInstanceIsNormal(String ip,Integer port);
+
 }

@@ -1,7 +1,7 @@
 
+Fsquid:S1148I"#Use a logger to log this exception.(€ÉÔ…ýÿÿÿÿ8õ‚†¥Û-
+vsquid:UselessImportCheck"KRemove this unused import 'org.springframework.context.ApplicationContext'.(»Ô»¿8ÌÎØ‘Ý-
 Zsquid:S1068!"<Remove this unused "scheduledExecutorService" private field.(ûÌ”§8ÌÎØ‘Ý-
 ksquid:UselessImportCheck";Remove this unused import 'java.util.concurrent.Executors'.(äåÒÛÿÿÿÿÿ8ÌÎØ‘Ý-
-vsquid:UselessImportCheck"KRemove this unused import 'org.springframework.context.ApplicationContext'.(»Ô»¿8ÌÎØ‘Ý-
-Fsquid:S1148I"#Use a logger to log this exception.(€ÉÔ…ýÿÿÿÿ8õ‚†¥Û-
-\squid:UselessImportCheck",Remove this unused import 'java.util.Timer'.(†£ñáÿÿÿÿÿ8ÌÎØ‘Ý-
 [squid:UselessImportCheck"0Remove this unused import 'java.util.TimerTask'.(àÀÇÙ8ÌÎØ‘Ý-
+\squid:UselessImportCheck",Remove this unused import 'java.util.Timer'.(†£ñáÿÿÿÿÿ8ÌÎØ‘Ý-

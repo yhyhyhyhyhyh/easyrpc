@@ -41,7 +41,7 @@ public class ResponseFuture implements Serializable{
         return response;
     }
 
-    public void Received() {
+    public void received() {
         if( response != null) {
             return;
         }

@@ -1,6 +1,5 @@
 package com.yh.remoting;
 
-import com.yh.protocol.RpcResult;
 import com.yh.rpc.Response;
 import io.netty.channel.ChannelHandlerContext;
 

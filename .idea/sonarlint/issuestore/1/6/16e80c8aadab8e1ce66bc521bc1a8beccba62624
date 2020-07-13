@@ -1,13 +1,13 @@
 
-U
-squid:S106&"9Replace this use of System.out or System.err by a logger.(ğ•l8‹Åšİ-
-9squid:S3626K"Remove this redundant jump.(ÉŠ©ƒ8û‰ù™İ-
-psquid:S2095"MUse try-with-resources or close this "BasicDataSource" in a "finally" clause.(€‹€çûÿÿÿÿ8³Ï™İ-
-[
-squid:S106("9Replace this use of System.out or System.err by a logger.(ş×û¶üÿÿÿÿ8û‰ù™İ-
+Fsquid:S1148J"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8û‰ù™İ-
 {
 squid:S1359"YReduce the total number of break and continue statements in this loop to use at most one.(˜ïˆÿÿÿÿÿ8û‰ù™İ-
-Fsquid:S1148J"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8û‰ù™İ-
-isquid:CommentedOutCodeLineG"<This block of commented-out lines of code should be removed.(‡í”œ8í¥®šİ-
-Nsquid:S1481F"+Remove this unused "result" local variable.(ß¸á±úÿÿÿÿ8í¥®šİ-
 ]squid:S1854F":Remove this useless assignment to local variable "result".(ß¸á±úÿÿÿÿ8í¥®šİ-
+[
+squid:S106("9Replace this use of System.out or System.err by a logger.(ş×û¶üÿÿÿÿ8û‰ù™İ-
+9squid:S3626K"Remove this redundant jump.(ÉŠ©ƒ8û‰ù™İ-
+psquid:S2095"MUse try-with-resources or close this "BasicDataSource" in a "finally" clause.(€‹€çûÿÿÿÿ8³Ï™İ-
+U
+squid:S106&"9Replace this use of System.out or System.err by a logger.(ğ•l8‹Åšİ-
+Nsquid:S1481F"+Remove this unused "result" local variable.(ß¸á±úÿÿÿÿ8í¥®šİ-
+isquid:CommentedOutCodeLineG"<This block of commented-out lines of code should be removed.(‡í”œ8í¥®šİ-

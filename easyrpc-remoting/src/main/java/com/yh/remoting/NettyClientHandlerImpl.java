@@ -10,6 +10,7 @@ import io.netty.util.ReferenceCountUtil;
 
 import java.net.SocketAddress;
 
+
 public class NettyClientHandlerImpl extends ChannelHandlerAdapter implements NettyClientHandler{
 
     private NettyClient client;
@@ -25,6 +26,7 @@ public class NettyClientHandlerImpl extends ChannelHandlerAdapter implements Net
                 Response response = (Response)msg;
                 messageRecived(ctx,response);
             } else if( msg instanceof String) {
+                System.out.println((String)msg);
                 //TODO 收集错误信息
             }
         } finally {
@@ -47,8 +49,10 @@ public class NettyClientHandlerImpl extends ChannelHandlerAdapter implements Net
     public void messageRecived(ChannelHandlerContext ctx, Response response) {
         long requestId = response.getRequestId();
         ResponseFuture responseFuture = Request2ResponseContext.getResponseFuture(requestId);
-        responseFuture.setResponse(response);
-        responseFuture.Received();
+        if(responseFuture != null) {
+            responseFuture.setResponse(response);
+            responseFuture.received();
+        }
     }
 
     @Override

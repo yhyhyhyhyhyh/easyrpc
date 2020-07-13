@@ -1,4 +1,0 @@
-
-Zsquid:S1155">Use isEmpty() to check whether the collection is empty or not.(ù½ÀÍùÿÿÿÿ
-Vsquid:UselessImportCheck"-Remove this unused import 'java.util.Random'.(èøÉ›ùÿÿÿÿ
-Esquid:S2140")Use "java.util.Random.nextInt()" instead.(×Å„¦ûÿÿÿÿ
